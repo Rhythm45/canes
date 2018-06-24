@@ -19,25 +19,19 @@
   <img src="assets/imgs/logo.png"/> 
 
 
-  <ion-item>
-      <ion-label floating> ingrese nombre </ion-label>
-      
-      <ion-input placeholder="" 
-      [(ngModel)]="nombre">
-      </ion-input>
+  <ion-list>
+
+    <ion-item>
+      <ion-label id="nombre">Nombre</ion-label>
+      <ion-input type="text" [(ngModel)]="nombre"></ion-input>
     </ion-item>
   
-    
-  
     <ion-item>
-        <ion-label floating> ingrese password </ion-label>
-        
-        <ion-input  type="password"placeholder="" 
-        [(ngModel)]="pass">
-        </ion-input>
-
-        
-      </ion-item>
+      <ion-label id="pass" >Clave</ion-label>
+      <ion-input type="password" [(ngModel)]="pass"></ion-input>
+    </ion-item>
+  
+  </ion-list>
   
       
   
