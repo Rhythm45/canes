@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Ventas
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="createTask()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+    
+    <ion-grid>
+        
+        <ion-row>
+          <ion-col col-3>Raza </ion-col>
+          <ion-col col-2>Cant </ion-col>
+          <ion-col col-3>Precio </ion-col>
+          <ion-col col-4>Fecha </ion-col>
+        </ion-row>
+      </ion-grid>
+
+  <ion-list>
+    <ion-item-sliding *ngFor='let task of tasks | async'>
+      <ion-item>
+
+          
+         
+          
+        
+             
+                
+              
+            
+
+
+        {{task.raza }}  | {{ task.cantidad }} &nbsp;| {{ task.precio }}&nbsp;&nbsp; | {{ task.fecha }}
+        
+      </ion-item>
+
+       <ion-item-options>
+        <button ion-button color="danger" (click)="removeTask( task )">
+          Delete
+        </button>
+       </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
