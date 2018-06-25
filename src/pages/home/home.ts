@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, AlertController } from 'ionic-angular';
-import { AngularFireList, AngularFireDatabase } from 'angularfire2/database';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map'
+import { NavController } from 'ionic-angular';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+
 
 @Component({
   selector: 'page-home',
@@ -10,90 +10,149 @@ import 'rxjs/add/operator/map'
 })
 export class HomePage {
 
-  tasksRef: AngularFireList<any>;
-  tasks: Observable<any[]>;
-
-  constructor(
-    public navCtrl: NavController,
-    public alertCtrl: AlertController,
-    public database: AngularFireDatabase
-  ) {
-    this.tasksRef = this.database.list('Canes');
-    this.tasks = this.tasksRef.snapshotChanges()
-    .map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
-    });
+  ventas: any;
+  private db: any;
+  model: any = {};
+  isEditing: boolean = false;
+  
+  constructor(public navCtrl: NavController) {
+    this.db = firebase.firestore();
+    this.loadData();
   }
 
-  createTask(){
-    let newTaskModal = this.alertCtrl.create({
-      title: 'Registre su venta',
-      message: "ingrese los datos de venta",
-      inputs: [
-        {
-          name: 'raza',
-          placeholder: 'Raza'
-          
-        }
-        ,
-        {
-          name: 'cantidad',
-          placeholder: 'Cantidad'
-          
-        }
-        ,
-        {
-          name: 'precio',
-          placeholder: 'Precio'
-          
-        }
-        ,
+  loadData(){
+    this.getAllDocuments("ventas").then((e)=>{
+      this.ventas = e;
+  });
+  }
 
-        {
-          name: 'fecha',
-          placeholder: 'Fecha'
-          
-        }
-        ,
-      ]
-      
-      ,
-     
-      
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Save',
-          handler: data => {
-            this.tasksRef.push({
-              raza: data.raza,
-              cantidad: data.cantidad,
-              precio: data.precio,
-              fecha: data.fecha
-              
+addMessage(){
+    if(!this.isEditing){
+    this.addDocument("ventas", this.model).then(()=>{
+      this.loadData();//refresh view
+    });
+  }else{
+    this.updateDocument("ventas", this.model.$key, this.model).then(()=>{
+      this.loadData();//refresh view
+    });
+  }
+  this.isEditing = false;
+  //clear form
+  this.model.raza = '';
+  this.model.cantidad = '';
+  this.model.precio = '';
+  this.model.fecha = '';
+  
+  
+}
+
+updateMessage(obj){
+  this.model = obj;
+  this.isEditing = true;
+}
+
+deleteMessage(key){
+  this.deleteDocument("ventas", key).then(()=>{
+    this.loadData();//refresh view
+    this.isEditing = false;
+  });
+}
+
+
+
+
+
+//CRUD operation methods------------------------------------------------------------------------------------------
+getAllDocuments(collection: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        this.db.collection(collection)
+            .get()
+            .then((querySnapshot) => {
+                let arr = [];
+                querySnapshot.forEach(function (doc) {
+                    var obj = JSON.parse(JSON.stringify(doc.data()));
+                    obj.$key = doc.id
+                    console.log(obj)
+                    arr.push(obj);
+                });
+
+                if (arr.length > 0) {
+                    console.log("Document data:", arr);
+                    resolve(arr);
+                } else {
+                    console.log("No such document!");
+                    resolve(null);
+                }
+
+
+            })
+            .catch((error: any) => {
+                reject(error);
             });
-          }
-        }
-      ]
     });
-    newTaskModal.present( newTaskModal );
+}
+
+deleteDocument(collectionName: string, docID: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+      this.db
+          .collection(collectionName)
+          .doc(docID)
+          .delete()
+          .then((obj: any) => {
+              resolve(obj);
+          })
+          .catch((error: any) => {
+              reject(error);
+          });
+  });
+}
+
+addDocument(collectionName: string, dataObj: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+      this.db.collection(collectionName).add(dataObj)
+          .then((obj: any) => {
+              resolve(obj);
+          })
+          .catch((error: any) => {
+              reject(error);
+          });
+  });
+}
+
+updateDocument(collectionName: string, docID: string, dataObj: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+      this.db
+          .collection(collectionName)
+          .doc(docID)
+          .update(dataObj)
+          .then((obj: any) => {
+              resolve(obj);
+          })
+          .catch((error: any) => {
+              reject(error);
+          });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
-  updateTask( task ){
-    this.tasksRef.update( task.key,{
-      title: task.title,
-      done: !task.done
-    });
-  }
-
-  removeTask( task ){
-    console.log( task );
-    this.tasksRef.remove( task.key );
-  }
-
+ 
 }

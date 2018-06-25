@@ -12,14 +12,21 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { ComprasPage } from '../pages/compras/compras';
 import { DireccionamientoPage } from '../pages/direccionamiento/direccionamiento';
-export const firebaseConfig = {
-  apiKey: "AIzaSyCr42ComYB8aMNGYWDs0nJKMYICJHza76U",
-    authDomain: "prueba-25fd7.firebaseapp.com",
-    databaseURL: "https://prueba-25fd7.firebaseio.com",
-    projectId: "prueba-25fd7",
-    storageBucket: "prueba-25fd7.appspot.com",
-    messagingSenderId: "635810188372"
-};
+
+import * as firebase from 'firebase';
+
+
+
+  const config = {
+    apiKey: "AIzaSyCr42ComYB8aMNGYWDs0nJKMYICJHza76U",
+      authDomain: "prueba-25fd7.firebaseapp.com",
+      databaseURL: "https://prueba-25fd7.firebaseio.com",
+      projectId: "prueba-25fd7",
+      storageBucket: "prueba-25fd7.appspot.com",
+      messagingSenderId: "635810188372"
+  };
+  firebase.initializeApp(config);
+
 
 @NgModule({
   declarations: [
@@ -32,8 +39,7 @@ export const firebaseConfig = {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig,'prueba'),
-    AngularFireDatabaseModule
+    
   ],
   bootstrap: [IonicApp],
   entryComponents: [

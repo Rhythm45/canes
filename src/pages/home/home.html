@@ -1,52 +1,63 @@
 <ion-header>
-  <ion-navbar color="primary">
-    <ion-title>
-      Ventas
-    </ion-title>
-    <ion-buttons start>
-      <button ion-button (click)="createTask()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
-  </ion-navbar>
-</ion-header>
-
-<ion-content>
-
-    
-    <ion-grid>
-        
-        <ion-row>
-          <ion-col col-3>Raza </ion-col>
-          <ion-col col-2>Cant </ion-col>
-          <ion-col col-3>Precio </ion-col>
-          <ion-col col-4>Fecha </ion-col>
-        </ion-row>
-      </ion-grid>
-
+    <ion-navbar>
+      <ion-title>
+        Registro de Ventas
+      </ion-title>
+    </ion-navbar>
+  </ion-header>
+   
+  <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor='let task of tasks | async'>
       <ion-item>
-
-          
-         
-          
-        
-             
-                
-              
+          <ion-label floating>Raza :</ion-label>
+          <ion-input type="text" value="" [(ngModel)]="model.raza"></ion-input>
+        </ion-item>            
+        <ion-item>
+          <ion-label floating>Cantidad :</ion-label>
+          <ion-textarea   type="text" row="10" [(ngModel)]="model.cantidad"></ion-textarea>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>Precio :</ion-label>
+          <ion-textarea   type="text" row="10" [(ngModel)]="model.precio"></ion-textarea>
+        </ion-item>
+  
+        <ion-item>
+            <ion-label floating>Fecha :</ion-label>
+            <ion-textarea   type="text" row="10" [(ngModel)]="model.fecha"></ion-textarea>
+          </ion-item>
+        <ion-item>
+  
             
-
-
-        {{task.raza }}  | {{ task.cantidad }} &nbsp;| {{ task.precio }}&nbsp;&nbsp; | {{ task.fecha }}
-        
-      </ion-item>
-
-       <ion-item-options>
-        <button ion-button color="danger" (click)="removeTask( task )">
-          Delete
-        </button>
-       </ion-item-options>
-    </ion-item-sliding>
+              
+            <button type="button" (click)="addMessage()" ion-button full >Añadir/Modificar</button>
+        </ion-item>
   </ion-list>
-</ion-content>
+   
+    <ion-card>
+      <ion-card-header>
+          Deslice hacia para modificar o eliminar
+      </ion-card-header>
+    </ion-card>
+    <ion-list>
+      <ion-item-sliding *ngFor="let venta of ventas">
+        <ion-item>
+          <h3>Raza: {{venta.raza}}</h3>
+          <p>Cantidad: {{venta.cantidad}}</p>
+          <p>Precio: {{venta.precio}}</p>
+          <p>Fecha: {{venta.fecha}}</p>
+        </ion-item>
+        <ion-item-options>
+          <button ion-button color="danger" (click)="deleteMessage(venta.$key)">
+          <ion-icon name="ios-trash"></ion-icon>
+          delete
+        </button>
+        <button ion-button color="success" (click)="updateMessage(venta)">
+            <ion-icon name="ios-create"></ion-icon>
+            edit
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+   
+  </ion-content>
